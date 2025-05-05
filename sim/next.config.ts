@@ -1,5 +1,6 @@
 import { withSentryConfig } from '@sentry/nextjs';
 import type { NextConfig } from 'next'
+import { webpack } from 'next/dist/compiled/webpack/webpack'
 
 const nextConfig: NextConfig = {
   devIndicators: false,
@@ -18,7 +19,7 @@ const nextConfig: NextConfig = {
   webpack: (config, { isServer, dev }) => {
     // Skip webpack configuration in development when using Turbopack
     if (dev && process.env.NEXT_RUNTIME === 'turbopack') {
-      return config;
+      return config
     }
     
     // Configure webpack to use memory cache instead of filesystem cache
@@ -112,6 +113,13 @@ const sentryConfig = {
   project: process.env.SENTRY_PROJECT || '',
   authToken: process.env.SENTRY_AUTH_TOKEN || undefined,
   disableSourceMapUpload: process.env.NODE_ENV !== 'production',
+  bundleSizeOptimizations: {
+    excludeDebugStatements: true,
+    excludePerformanceMonitoring: true,
+    excludeReplayIframe: true,
+    excludeReplayShadowDom: true,
+    excludeReplayWorker: true,
+  },
 }
 
 export default process.env.NODE_ENV === 'development'
